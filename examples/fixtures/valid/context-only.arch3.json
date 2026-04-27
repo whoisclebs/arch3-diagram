@@ -1,0 +1,34 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Context Scope",
+    "description": "Fixture focused on layer 1."
+  },
+  "context": {
+    "actors": [
+      {
+        "id": "customer",
+        "name": "Customer",
+        "description": "External user of the platform."
+      },
+      {
+        "id": "erp-system",
+        "name": "ERP System",
+        "description": "External enterprise integration."
+      }
+    ],
+    "systems": [
+      {
+        "id": "billing-platform",
+        "name": "Billing Platform",
+        "description": "Main billing capability."
+      }
+    ]
+  },
+  "containers": [],
+  "components": []
+}

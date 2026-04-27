@@ -1,0 +1,29 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Unknown System",
+    "description": "Invalid semantic fixture."
+  },
+  "context": {
+    "actors": [],
+    "systems": []
+  },
+  "containers": [
+    {
+      "id": "inventory-api",
+      "system": "missing-system",
+      "name": "Inventory API",
+      "technology": "Go",
+      "description": "Inventory backend.",
+      "metadata": {
+        "owner": "inventory"
+      },
+      "relationships": []
+    }
+  ],
+  "components": []
+}

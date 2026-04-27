@@ -1,0 +1,16 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Malformed Scope",
+    "description": "This fixture is intentionally malformed."
+  },
+  "context": {
+    "actors": [],
+    "systems": []
+  },
+  "containers": [],
+  "components": []

@@ -11,6 +11,7 @@ test("renders a containers layer diagram", () => {
   });
 
   assert.match(output, /@startuml Arch3/);
+  assert.match(output, /!define ARCH3_CONTAINER/);
   assert.match(output, /package \"Containers\"/);
   assert.match(output, /Checkout API/);
 });
@@ -22,5 +23,6 @@ test("renders expanded components for a container", () => {
   });
 
   assert.match(output, /Expanded container: Checkout API/);
-  assert.match(output, /libs: express, stripe, prisma/);
+  assert.match(output, /ARCH3_LIBRARY\("express"/);
+  assert.match(output, /uses lib/);
 });

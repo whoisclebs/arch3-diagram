@@ -12,3 +12,14 @@ destinos de render de la notación.
 - render orientado por capa
 - expansión opcional de contenedor a componentes
 - sin redefinir la semántica de Arch3 dentro del renderer
+
+## Estado actual de implementación
+
+La extensión actual avanza desde **placeholder** hacia **draft-compliant**.
+
+Ya introduce:
+
+- macros propias de Arch3 en PlantUML
+- estereotipos y skin parameters específicos de Arch3
+- tratamiento distinto para actors, systems, containers, components y libraries
+- tratamiento visual separado para dependencias de librerías en layer 3

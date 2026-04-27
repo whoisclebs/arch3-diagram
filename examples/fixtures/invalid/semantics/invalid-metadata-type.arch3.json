@@ -1,0 +1,37 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Invalid Metadata",
+    "description": "Invalid semantic fixture."
+  },
+  "context": {
+    "actors": [],
+    "systems": [
+      {
+        "id": "crm",
+        "name": "CRM",
+        "description": "CRM capability."
+      }
+    ]
+  },
+  "containers": [
+    {
+      "id": "crm-api",
+      "system": "crm",
+      "name": "CRM API",
+      "technology": "Java",
+      "description": "CRM backend.",
+      "metadata": {
+        "owner": {
+          "team": "crm-squad"
+        }
+      },
+      "relationships": []
+    }
+  ],
+  "components": []
+}

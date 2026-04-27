@@ -1,0 +1,40 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Unknown Target",
+    "description": "Invalid semantic fixture."
+  },
+  "context": {
+    "actors": [],
+    "systems": [
+      {
+        "id": "payments",
+        "name": "Payments",
+        "description": "Payment capability."
+      }
+    ]
+  },
+  "containers": [
+    {
+      "id": "payments-api",
+      "system": "payments",
+      "name": "Payments API",
+      "technology": "Node.js",
+      "description": "Payment backend.",
+      "metadata": {
+        "owner": "payments"
+      },
+      "relationships": [
+        {
+          "target": "missing-target",
+          "description": "Calls missing service"
+        }
+      ]
+    }
+  ],
+  "components": []
+}

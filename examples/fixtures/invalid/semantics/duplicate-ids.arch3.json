@@ -1,0 +1,29 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Duplicate Ids",
+    "description": "Invalid semantic fixture."
+  },
+  "context": {
+    "actors": [
+      {
+        "id": "shared-id",
+        "name": "Actor One",
+        "description": "Duplicate id actor."
+      }
+    ],
+    "systems": [
+      {
+        "id": "shared-id",
+        "name": "System One",
+        "description": "Duplicate id system."
+      }
+    ]
+  },
+  "containers": [],
+  "components": []
+}

@@ -1,0 +1,12 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Truncated Scope",
+    "description": "This fixture is intentionally truncated."
+  },
+  "context": {
+    "actors": [],

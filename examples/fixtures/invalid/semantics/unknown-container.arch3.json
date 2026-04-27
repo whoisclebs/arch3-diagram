@@ -1,0 +1,35 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Unknown Container",
+    "description": "Invalid semantic fixture."
+  },
+  "context": {
+    "actors": [],
+    "systems": [
+      {
+        "id": "inventory",
+        "name": "Inventory",
+        "description": "Inventory capability."
+      }
+    ]
+  },
+  "containers": [],
+  "components": [
+    {
+      "id": "inventory-service",
+      "container": "missing-container",
+      "name": "Inventory Service",
+      "description": "Business logic.",
+      "libraries": ["zod"],
+      "metadata": {
+        "owner": "inventory"
+      },
+      "relationships": []
+    }
+  ]
+}

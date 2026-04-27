@@ -1,0 +1,12 @@
+{
+  "scope": {
+    "name": "Missing Methodology",
+    "description": "Invalid structure fixture."
+  },
+  "context": {
+    "actors": [],
+    "systems": []
+  },
+  "containers": [],
+  "components": []
+}

@@ -1,0 +1,80 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Components Scope",
+    "description": "Fixture focused on layer 3."
+  },
+  "context": {
+    "actors": [],
+    "systems": [
+      {
+        "id": "orders-platform",
+        "name": "Orders Platform",
+        "description": "Order orchestration capability."
+      }
+    ]
+  },
+  "containers": [
+    {
+      "id": "orders-api",
+      "system": "orders-platform",
+      "name": "Orders API",
+      "technology": "Node.js",
+      "description": "Order backend.",
+      "metadata": {
+        "owner": "orders-squad",
+        "runtime": "container"
+      },
+      "relationships": []
+    }
+  ],
+  "components": [
+    {
+      "id": "orders-controller",
+      "container": "orders-api",
+      "name": "Orders Controller",
+      "description": "Input boundary for order requests.",
+      "libraries": ["express", "zod"],
+      "metadata": {
+        "owner": "orders-squad"
+      },
+      "relationships": [
+        {
+          "target": "orders-service",
+          "description": "Delegates orchestration"
+        }
+      ]
+    },
+    {
+      "id": "orders-service",
+      "container": "orders-api",
+      "name": "Orders Service",
+      "description": "Business orchestration.",
+      "libraries": ["prisma", "zod"],
+      "metadata": {
+        "owner": "orders-squad"
+      },
+      "relationships": [
+        {
+          "target": "orders-repository",
+          "description": "Persists aggregates"
+        }
+      ]
+    },
+    {
+      "id": "orders-repository",
+      "container": "orders-api",
+      "name": "Orders Repository",
+      "description": "Persistence adapter.",
+      "libraries": ["prisma"],
+      "metadata": {
+        "owner": "orders-squad"
+      },
+      "relationships": []
+    }
+  ]
+}

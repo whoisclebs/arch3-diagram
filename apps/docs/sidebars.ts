@@ -13,6 +13,8 @@ const sidebars = {
         "reference/official-notation",
         "reference/canonical-model",
         "reference/diagram-as-code",
+        "reference/fixtures-catalog",
+        "reference/test-and-acceptance",
         "reference/visual-contract",
         "reference/plantuml-renderer",
       ],

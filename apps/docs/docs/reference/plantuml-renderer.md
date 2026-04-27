@@ -12,3 +12,14 @@ target for the notation.
 - layer-focused rendering
 - optional container expansion into components
 - no redefinition of Arch3 semantics inside the renderer
+
+## Current implementation stage
+
+The current extension is moving from **placeholder** toward **draft-compliant**.
+
+It already introduces:
+
+- Arch3-owned PlantUML macros
+- Arch3-specific stereotypes and skin parameters
+- distinct treatment for actors, systems, containers, components, and libraries
+- separate visual treatment for library dependencies in layer 3

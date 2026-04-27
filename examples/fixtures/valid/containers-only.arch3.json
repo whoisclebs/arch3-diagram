@@ -1,0 +1,53 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Containers Scope",
+    "description": "Fixture focused on layer 2."
+  },
+  "context": {
+    "actors": [],
+    "systems": [
+      {
+        "id": "identity-platform",
+        "name": "Identity Platform",
+        "description": "Core authentication capability."
+      }
+    ]
+  },
+  "containers": [
+    {
+      "id": "auth-web",
+      "system": "identity-platform",
+      "name": "Auth Web",
+      "technology": "Next.js",
+      "description": "Customer login experience.",
+      "metadata": {
+        "owner": "identity-squad",
+        "tier": "critical"
+      },
+      "relationships": [
+        {
+          "target": "auth-api",
+          "description": "Calls authentication endpoints"
+        }
+      ]
+    },
+    {
+      "id": "auth-api",
+      "system": "identity-platform",
+      "name": "Auth API",
+      "technology": "Go",
+      "description": "Authentication backend.",
+      "metadata": {
+        "owner": "identity-squad",
+        "runtime": "service"
+      },
+      "relationships": []
+    }
+  ],
+  "components": []
+}

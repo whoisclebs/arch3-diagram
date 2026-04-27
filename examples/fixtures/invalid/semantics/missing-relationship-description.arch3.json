@@ -1,0 +1,50 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Missing Relationship Description",
+    "description": "Invalid semantic fixture."
+  },
+  "context": {
+    "actors": [],
+    "systems": [
+      {
+        "id": "support",
+        "name": "Support",
+        "description": "Support capability."
+      }
+    ]
+  },
+  "containers": [
+    {
+      "id": "support-api",
+      "system": "support",
+      "name": "Support API",
+      "technology": "Elixir",
+      "description": "Support backend.",
+      "metadata": {
+        "owner": "support-squad"
+      },
+      "relationships": [
+        {
+          "target": "support-db"
+        }
+      ]
+    },
+    {
+      "id": "support-db",
+      "system": "support",
+      "name": "Support DB",
+      "technology": "PostgreSQL",
+      "description": "Support storage.",
+      "metadata": {
+        "owner": "support-squad"
+      },
+      "relationships": []
+    }
+  ],
+  "components": []
+}

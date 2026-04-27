@@ -61,8 +61,105 @@ export type Arch3Model = {
 
 export type Arch3ValidationResult = {
   ok: boolean;
+  issues: Arch3ValidationIssue[];
   errors: string[];
 };
+
+export type Arch3ValidationIssue = {
+  code: string;
+  path: string;
+  message: string;
+};
+
+export class Arch3ValidationError extends Error {
+  issues: Arch3ValidationIssue[];
+
+  constructor(issues: Arch3ValidationIssue[]) {
+    super(issues.map((issue) => issue.message).join("\n"));
+    this.name = "Arch3ValidationError";
+    this.issues = issues;
+  }
+}
+
+function pushIssue(
+  issues: Arch3ValidationIssue[],
+  code: string,
+  path: string,
+  message: string
+): void {
+  issues.push({ code, path, message });
+}
+
+function isPrimitiveMetadataValue(
+  value: unknown
+): value is string | number | boolean {
+  return (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  );
+}
+
+function validateMetadata(
+  metadata: unknown,
+  ownerLabel: string,
+  path: string,
+  issueBase: "container" | "component",
+  issues: Arch3ValidationIssue[]
+): void {
+  if (!metadata || typeof metadata !== "object" || Array.isArray(metadata)) {
+    pushIssue(
+      issues,
+      `${issueBase}.invalid_metadata`,
+      path,
+      `${ownerLabel} must have metadata.`
+    );
+    return;
+  }
+
+  Object.entries(metadata).forEach(([key, value]) => {
+    if (!isPrimitiveMetadataValue(value)) {
+      pushIssue(
+        issues,
+        `${issueBase}.invalid_metadata_value`,
+        `${path}.${key}`,
+        `${ownerLabel} has invalid metadata value for key '${key}'.`
+      );
+    }
+  });
+}
+
+function validateRelationships(
+  elements: Array<{ id: string; relationships?: Arch3Relationship[] }>,
+  scope: string,
+  addressableIds: Set<string>,
+  issues: Arch3ValidationIssue[]
+): void {
+  elements.forEach((element, elementIndex) => {
+    (element.relationships ?? []).forEach((relationship, relationshipIndex) => {
+      if (!relationship.target || !addressableIds.has(relationship.target)) {
+        pushIssue(
+          issues,
+          "relationship.unknown_target",
+          `${scope}s[${elementIndex}].relationships[${relationshipIndex}].target`,
+          `${scope} ${element.id} references unknown target ${relationship.target}.`
+        );
+      }
+
+      if (
+        typeof relationship.description !== "string" ||
+        relationship.description.trim().length === 0
+      ) {
+        pushIssue(
+          issues,
+          "relationship.missing_description",
+          `${scope}s[${elementIndex}].relationships[${relationshipIndex}].description`,
+          `${scope} ${element.id} must define a relationship description.`
+        );
+      }
+    });
+  });
+}
 
 export function createExampleModel(): Arch3Model {
   return {
@@ -211,27 +308,70 @@ export function createExampleModel(): Arch3Model {
 }
 
 export function validateArch3Model(model: unknown): Arch3ValidationResult {
-  const errors: string[] = [];
+  const issues: Arch3ValidationIssue[] = [];
 
   if (!model || typeof model !== "object") {
-    return { ok: false, errors: ["Model must be an object."] };
+    return {
+      ok: false,
+      issues: [
+        {
+          code: "model.invalid_type",
+          path: "$",
+          message: "Model must be an object.",
+        },
+      ],
+      errors: ["Model must be an object."],
+    };
   }
 
   const candidate = model as Partial<Arch3Model>;
   const ids = new Set<string>();
+  const systemsById = new Set<string>();
   const containersById = new Set<string>();
   const addressableIds = new Set<string>();
 
   if (candidate.methodology?.name !== "Arch3") {
-    errors.push("methodology.name must be 'Arch3'.");
+    pushIssue(
+      issues,
+      "methodology.invalid_name",
+      "methodology.name",
+      "methodology.name must be 'Arch3'."
+    );
   }
 
   if (!Array.isArray(candidate.methodology?.layers)) {
-    errors.push("methodology.layers must be an array.");
+    pushIssue(
+      issues,
+      "methodology.invalid_layers",
+      "methodology.layers",
+      "methodology.layers must be an array."
+    );
   }
 
   if (!candidate.scope?.name) {
-    errors.push("scope.name is required.");
+    pushIssue(issues, "scope.missing_name", "scope.name", "scope.name is required.");
+  }
+
+  if (!candidate.context) {
+    pushIssue(issues, "context.missing", "context", "context is required.");
+  }
+
+  if (!Array.isArray(candidate.containers)) {
+    pushIssue(
+      issues,
+      "containers.invalid_type",
+      "containers",
+      "containers must be an array."
+    );
+  }
+
+  if (!Array.isArray(candidate.components)) {
+    pushIssue(
+      issues,
+      "components.invalid_type",
+      "components",
+      "components must be an array."
+    );
   }
 
   const actors = candidate.context?.actors ?? [];
@@ -240,26 +380,37 @@ export function validateArch3Model(model: unknown): Arch3ValidationResult {
   const components = candidate.components ?? [];
 
   if (!Array.isArray(actors) || !Array.isArray(systems)) {
-    errors.push("context.actors and context.systems must be arrays.");
+    pushIssue(
+      issues,
+      "context.invalid_collections",
+      "context",
+      "context.actors and context.systems must be arrays."
+    );
   }
 
   [actors, systems, containers, components].forEach((collection) => {
     if (!Array.isArray(collection)) {
-      errors.push("All layer collections must be arrays.");
+      pushIssue(
+        issues,
+        "collections.invalid_type",
+        "$",
+        "All layer collections must be arrays."
+      );
     }
   });
 
   const register = (
     element: { id?: string } | null | undefined,
-    scope: string
+    scope: string,
+    path: string
   ): void => {
     if (!element?.id) {
-      errors.push(`${scope} entries must have an id.`);
+      pushIssue(issues, "entity.missing_id", path, `${scope} entries must have an id.`);
       return;
     }
 
     if (ids.has(element.id)) {
-      errors.push(`Duplicate id detected: ${element.id}`);
+      pushIssue(issues, "entity.duplicate_id", path, `Duplicate id detected: ${element.id}`);
       return;
     }
 
@@ -267,62 +418,81 @@ export function validateArch3Model(model: unknown): Arch3ValidationResult {
     addressableIds.add(element.id);
   };
 
-  actors.forEach((actor) => register(actor, "actors"));
-  systems.forEach((system) => register(system, "systems"));
-
-  containers.forEach((container) => {
-    register(container, "containers");
-    if (container.id) {
-      containersById.add(container.id);
-    }
-    if (!container.system) {
-      errors.push(`Container ${container.id} must reference a system.`);
-    }
-    if (!container.metadata || typeof container.metadata !== "object") {
-      errors.push(`Container ${container.id} must have metadata.`);
+  actors.forEach((actor, index) =>
+    register(actor, "actors", `context.actors[${index}]`)
+  );
+  systems.forEach((system, index) => {
+    register(system, "systems", `context.systems[${index}]`);
+    if (system.id) {
+      systemsById.add(system.id);
     }
   });
 
-  components.forEach((component) => {
-    register(component, "components");
+  containers.forEach((container, index) => {
+    register(container, "containers", `containers[${index}]`);
+    if (container.id) {
+      containersById.add(container.id);
+    }
+    if (!container.system || !systemsById.has(container.system)) {
+      pushIssue(
+        issues,
+        "container.unknown_system",
+        `containers[${index}].system`,
+        `Container ${container.id} must reference an existing system.`
+      );
+    }
+
+    validateMetadata(
+      container.metadata,
+      `Container ${container.id}`,
+      `containers[${index}].metadata`,
+      "container",
+      issues
+    );
+  });
+
+  components.forEach((component, index) => {
+    register(component, "components", `components[${index}]`);
     if (!component.container || !containersById.has(component.container)) {
-      errors.push(
+      pushIssue(
+        issues,
+        "component.unknown_container",
+        `components[${index}].container`,
         `Component ${component.id} must reference an existing container.`
       );
     }
     if (!Array.isArray(component.libraries)) {
-      errors.push(`Component ${component.id} must declare libraries.`);
+      pushIssue(
+        issues,
+        "component.missing_libraries",
+        `components[${index}].libraries`,
+        `Component ${component.id} must declare libraries.`
+      );
     }
+
+    validateMetadata(
+      component.metadata,
+      `Component ${component.id}`,
+      `components[${index}].metadata`,
+      "component",
+      issues
+    );
   });
 
-  const validateRelationships = (
-    elements: Array<{ id: string; relationships?: Arch3Relationship[] }>,
-    scope: string
-  ): void => {
-    elements.forEach((element) => {
-      (element.relationships ?? []).forEach((relationship) => {
-        if (!relationship.target || !addressableIds.has(relationship.target)) {
-          errors.push(
-            `${scope} ${element.id} references unknown target ${relationship.target}.`
-          );
-        }
-      });
-    });
-  };
-
-  validateRelationships(containers, "container");
-  validateRelationships(components, "component");
+  validateRelationships(containers, "container", addressableIds, issues);
+  validateRelationships(components, "component", addressableIds, issues);
 
   return {
-    ok: errors.length === 0,
-    errors,
+    ok: issues.length === 0,
+    issues,
+    errors: issues.map((issue) => issue.message),
   };
 }
 
 export function assertValidArch3Model(model: unknown): Arch3Model {
   const result = validateArch3Model(model);
   if (!result.ok) {
-    throw new Error(result.errors.join("\n"));
+    throw new Arch3ValidationError(result.issues);
   }
 
   return model as Arch3Model;

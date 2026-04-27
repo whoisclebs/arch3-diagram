@@ -12,3 +12,14 @@ destinos de renderização da notação.
 - renderização orientada por camada
 - expansão opcional de container para componentes
 - sem redefinir a semântica do Arch3 dentro do renderer
+
+## Estado atual da implementação
+
+A extensão atual está avançando de **placeholder** para **draft-compliant**.
+
+Ela já introduz:
+
+- macros próprias do Arch3 em PlantUML
+- estereótipos e skin parameters específicos do Arch3
+- tratamento distinto para actors, systems, containers, components e libraries
+- tratamento visual separado para dependências de bibliotecas na layer 3

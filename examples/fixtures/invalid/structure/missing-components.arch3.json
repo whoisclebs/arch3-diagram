@@ -1,0 +1,16 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Missing Components",
+    "description": "Invalid structure fixture."
+  },
+  "context": {
+    "actors": [],
+    "systems": []
+  },
+  "containers": []
+}

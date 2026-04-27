@@ -22,6 +22,31 @@ function buildTitle(model: Arch3Model, focusLayer: string): string {
   return `${model.scope.name} - ${focusLayer}`;
 }
 
+function renderPrelude(model: Arch3Model, focusLayer: string): string[] {
+  return [
+    "@startuml Arch3",
+    `title ${buildTitle(model, focusLayer)}`,
+    "skinparam shadowing false",
+    "skinparam packageStyle rectangle",
+    "skinparam defaultTextAlignment center",
+    "skinparam linetype ortho",
+    "hide stereotype",
+    "",
+    "!define ARCH3_ACTOR(name, alias) actor \"name\" as alias <<arch3_actor>>",
+    "!define ARCH3_SYSTEM(name, alias) rectangle \"name\\nSystem\" as alias <<arch3_system>>",
+    "!define ARCH3_CONTAINER(name, tech, alias) rectangle \"name\\n[tech]\" as alias <<arch3_container>>",
+    "!define ARCH3_COMPONENT(name, alias) rectangle \"name\" as alias <<arch3_component>>",
+    "!define ARCH3_LIBRARY(name, alias) artifact \"name\" as alias <<arch3_library>>",
+    "",
+    "skinparam actor<<arch3_actor>> { BackgroundColor #EDE9FE; BorderColor #5B21B6 }",
+    "skinparam rectangle<<arch3_system>> { BackgroundColor #DBEAFE; BorderColor #1D4ED8 }",
+    "skinparam rectangle<<arch3_container>> { BackgroundColor #DCFCE7; BorderColor #15803D }",
+    "skinparam rectangle<<arch3_component>> { BackgroundColor #FEF3C7; BorderColor #B45309 }",
+    "skinparam artifact<<arch3_library>> { BackgroundColor #FCE7F3; BorderColor #BE185D }",
+    "",
+  ];
+}
+
 function resolveExpandedContainer(
   model: Arch3Model,
   expandedContainer?: string
@@ -45,38 +70,29 @@ export function renderPlantUml(
   const { focusLayer = "containers", expandedContainer } = options;
   const validModel = assertValidArch3Model(model);
   const visibleComponentIds = new Set<string>();
+  const visibleLibraries = new Set<string>();
 
-  const lines: string[] = [
-    "@startuml Arch3",
-    `title ${buildTitle(validModel, focusLayer)}`,
-    "skinparam shadowing false",
-    "skinparam packageStyle rectangle",
-    "skinparam defaultTextAlignment center",
-    "",
-  ];
+  const lines: string[] = renderPrelude(validModel, focusLayer);
 
   validModel.context.actors.forEach((actor) => {
-    lines.push(`actor \"${actor.name}\" as ${aliasFor(actor.id)}`);
+    lines.push(`ARCH3_ACTOR(${JSON.stringify(actor.name)}, ${aliasFor(actor.id)})`);
   });
 
   if (focusLayer === "context") {
     validModel.context.systems.forEach((system) => {
-      lines.push(
-        `rectangle \"${system.name}\\nSystem\" as ${aliasFor(system.id)} #E3F2FD`
-      );
+      lines.push(`ARCH3_SYSTEM(${JSON.stringify(system.name)}, ${aliasFor(system.id)})`);
     });
   }
 
   if (focusLayer === "containers" || focusLayer === "components") {
     lines.push("package \"Containers\" {");
     validModel.containers.forEach((container) => {
-      lines.push(
-        `rectangle \"${container.name}\\n[${container.technology}]\" as ${aliasFor(container.id)} #E8F5E9`
-      );
+      lines.push(`ARCH3_CONTAINER(${JSON.stringify(container.name)}, ${JSON.stringify(container.technology)}, ${aliasFor(container.id)})`);
 
       const metadataLines = linesForMetadata(container.metadata);
       if (metadataLines.length > 0) {
         lines.push(`note right of ${aliasFor(container.id)}`);
+        lines.push("metadata");
         metadataLines.forEach((line) => lines.push(line));
         lines.push("end note");
       }
@@ -93,9 +109,16 @@ export function renderPlantUml(
       .filter((component) => component.container === scopedContainer.id)
       .forEach((component) => {
         visibleComponentIds.add(component.id);
-        lines.push(
-          `rectangle \"${component.name}\\nlibs: ${component.libraries.join(", ")}\" as ${aliasFor(component.id)} #FFF8E1`
-        );
+        lines.push(`ARCH3_COMPONENT(${JSON.stringify(component.name)}, ${aliasFor(component.id)})`);
+
+        component.libraries.forEach((library) => {
+          const libraryAlias = aliasFor(`${component.id}__lib__${library}`);
+          if (!visibleLibraries.has(libraryAlias)) {
+            visibleLibraries.add(libraryAlias);
+            lines.push(`ARCH3_LIBRARY(${JSON.stringify(library)}, ${libraryAlias})`);
+          }
+          lines.push(`${aliasFor(component.id)} ..> ${libraryAlias} : uses lib`);
+        });
       });
     lines.push("}");
   }

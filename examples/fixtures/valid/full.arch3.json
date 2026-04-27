@@ -1,0 +1,142 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Commerce Suite",
+    "description": "Full reference fixture for Arch3 v0.1."
+  },
+  "context": {
+    "actors": [
+      {
+        "id": "shopper",
+        "name": "Shopper",
+        "description": "Customer who places orders."
+      }
+    ],
+    "systems": [
+      {
+        "id": "commerce-suite",
+        "name": "Commerce Suite",
+        "description": "Primary commerce platform."
+      }
+    ]
+  },
+  "containers": [
+    {
+      "id": "web-app",
+      "system": "commerce-suite",
+      "name": "Web App",
+      "technology": "React",
+      "description": "Customer-facing purchase experience.",
+      "metadata": {
+        "owner": "experience-squad",
+        "repo": "github.com/whoisclebs/arch3-diagram",
+        "tier": "critical"
+      },
+      "relationships": [
+        {
+          "target": "checkout-api",
+          "description": "Sends checkout requests"
+        }
+      ]
+    },
+    {
+      "id": "checkout-api",
+      "system": "commerce-suite",
+      "name": "Checkout API",
+      "technology": "Node.js",
+      "description": "Processes checkout and order workflows.",
+      "metadata": {
+        "owner": "payments-squad",
+        "runtime": "container"
+      },
+      "relationships": [
+        {
+          "target": "orders-db",
+          "description": "Persists orders"
+        }
+      ]
+    },
+    {
+      "id": "orders-db",
+      "system": "commerce-suite",
+      "name": "Orders DB",
+      "technology": "PostgreSQL",
+      "description": "Transactional order database.",
+      "metadata": {
+        "owner": "data-platform",
+        "backup": "enabled"
+      },
+      "relationships": []
+    }
+  ],
+  "components": [
+    {
+      "id": "checkout-page",
+      "container": "web-app",
+      "name": "Checkout Page",
+      "description": "Checkout form and cart orchestration.",
+      "libraries": ["react-router", "zustand", "zod"],
+      "metadata": {
+        "criticalFlow": true
+      },
+      "relationships": [
+        {
+          "target": "checkout-client",
+          "description": "Triggers HTTP requests"
+        }
+      ]
+    },
+    {
+      "id": "checkout-client",
+      "container": "web-app",
+      "name": "Checkout Client",
+      "description": "HTTP client for the checkout API.",
+      "libraries": ["fetch", "zod"],
+      "metadata": {
+        "generated": false
+      },
+      "relationships": [
+        {
+          "target": "checkout-service",
+          "description": "Calls the checkout API"
+        }
+      ]
+    },
+    {
+      "id": "checkout-service",
+      "container": "checkout-api",
+      "name": "Checkout Service",
+      "description": "Coordinates validation and persistence.",
+      "libraries": ["express", "stripe", "prisma"],
+      "metadata": {
+        "owner": "payments-squad"
+      },
+      "relationships": [
+        {
+          "target": "orders-repository",
+          "description": "Stores the order"
+        }
+      ]
+    },
+    {
+      "id": "orders-repository",
+      "container": "checkout-api",
+      "name": "Orders Repository",
+      "description": "Persistence adapter for orders.",
+      "libraries": ["prisma"],
+      "metadata": {
+        "owner": "payments-squad"
+      },
+      "relationships": [
+        {
+          "target": "orders-db",
+          "description": "Uses PostgreSQL"
+        }
+      ]
+    }
+  ]
+}
