@@ -1,9 +1,18 @@
-## Describe your changes
+## Summary
 
-## Issue ticket number and link
+-
 
-## Checklist before requesting a review
-- [ ] I have performed a self-review of my code
-- [ ] If it is a core feature, I have added thorough tests.
-- [ ] Do we need to implement analytics?
-- [ ] Will this be part of a product update? If yes, please write one phrase about this update.
+## Validation
+
+- [ ] I ran `npm run typecheck`
+- [ ] I ran `npm run test`
+- [ ] I ran `npm run build`
+
+## Documentation
+
+- [ ] Docs were updated when behavior or workflows changed
+- [ ] Localized docs were updated when applicable
+
+## Risk notes
+
+-

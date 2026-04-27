@@ -1,0 +1,21 @@
+{
+  "name": "@arch3/arch3-model",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && tsx --test ./test/index.test.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

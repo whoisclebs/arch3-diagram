@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/arch3-model" },
+    { "path": "./packages/arch3-dsl" },
+    { "path": "./packages/arch3-plantuml" },
+    { "path": "./apps/editor-web" },
+    { "path": "./apps/docs" }
+  ]
+}

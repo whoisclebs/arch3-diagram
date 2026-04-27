@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": ".",
+    "noEmit": true,
+    "declaration": false,
+    "allowJs": false,
+    "isolatedModules": true
+  },
+  "include": [
+    "docusaurus.config.ts",
+    "sidebars.ts",
+    "scripts/**/*.ts"
+  ]
+}

@@ -1,45 +1,37 @@
 {
+  "name": "arch3-diagram",
   "private": true,
-  "dependencies": {
-    "@monaco-editor/react": "^4.4.5",
-    "monaco-themes": "^0.4.2",
-    "plantuml-encoder": "^1.4.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "^5.0.1",
-    "web-vitals": "^3.0.2"
+  "version": "0.1.0",
+  "description": "Reference tooling and editor for the Arch3 diagramming methodology.",
+  "license": "MIT",
+  "homepage": "https://github.com/whoisclebs/arch3-diagram",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whoisclebs/arch3-diagram.git"
   },
+  "bugs": {
+    "url": "https://github.com/whoisclebs/arch3-diagram/issues"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "postinstall": "node ./scripts/patch-webpackbar.cjs && npm run build:packages",
+    "build:packages": "npm run build -w @arch3/arch3-model && npm run build -w @arch3/arch3-dsl && npm run build -w @arch3/arch3-plantuml",
+    "typecheck": "npm run build:packages && npm run typecheck -w @arch3/arch3-model && npm run typecheck -w @arch3/arch3-dsl && npm run typecheck -w @arch3/arch3-plantuml && npm run typecheck -w @arch3/editor-web && npm run typecheck -w @arch3/docs",
+    "build": "npm run build:packages && npm run build -w @arch3/editor-web && npm run build -w @arch3/docs",
+    "test": "npm run test -w @arch3/arch3-model && npm run test -w @arch3/arch3-dsl && npm run test -w @arch3/arch3-plantuml && npm run test -w @arch3/editor-web && npm run test -w @arch3/docs",
+    "lint": "npm run typecheck",
+    "dev:editor": "npm run build:packages && npm run start -w @arch3/editor-web",
+    "dev:docs": "npm run start -w @arch3/docs"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "engines": {
+    "node": ">=18"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.12",
-    "postcss": "^8.4.16",
-    "tailwindcss": "^3.1.8",
-    "@svgr/webpack": "^6.3.1"
-  },
-  "overrides": {
-    "@svgr/webpack": "$@svgr/webpack"
+    "@types/node": "^24.9.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   }
 }

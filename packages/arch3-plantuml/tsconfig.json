@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [{ "path": "../arch3-model" }],
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", "test"]
+}

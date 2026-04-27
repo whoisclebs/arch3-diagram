@@ -1,0 +1,9 @@
+:root {
+  --ifm-color-primary: #5b21b6;
+  --ifm-color-primary-dark: #4c1d95;
+  --ifm-color-primary-light: #7c3aed;
+}
+
+body {
+  font-feature-settings: "liga" 1, "calt" 1;
+}
