@@ -1,6 +1,6 @@
 # Diagram as code
 
-Arch3 usa actualmente JSON como su primera DSL funcional.
+Arch3 soporta actualmente JSON y una DSL textual mínima.
 
 ## Características
 
@@ -8,6 +8,7 @@ Arch3 usa actualmente JSON como su primera DSL funcional.
 - arrays explícitos por capa
 - relaciones con nombre
 - metadatos arbitrarios en contenedores y componentes
+- autoría textual mediante comandos lineales de Arch3 DSL
 
 ## Ejemplo
 

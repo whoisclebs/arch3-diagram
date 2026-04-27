@@ -1,0 +1,3 @@
+methodology Arch3 0.1.0 context containers components
+scope "Broken Scope" "Invalid DSL fixture."
+unknown broken "This command must fail"

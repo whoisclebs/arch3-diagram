@@ -23,3 +23,7 @@ Ela já introduz:
 - estereótipos e skin parameters específicos do Arch3
 - tratamento distinto para actors, systems, containers, components e libraries
 - tratamento visual separado para dependências de bibliotecas na layer 3
+
+## Snapshots de regressão
+
+A extensão é sustentada por snapshots `.puml` versionados para fixtures chave.

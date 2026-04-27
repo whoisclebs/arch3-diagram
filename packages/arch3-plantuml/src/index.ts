@@ -69,17 +69,20 @@ export function renderPlantUml(
 ): string {
   const { focusLayer = "containers", expandedContainer } = options;
   const validModel = assertValidArch3Model(model);
+  const visibleNodeIds = new Set<string>();
   const visibleComponentIds = new Set<string>();
   const visibleLibraries = new Set<string>();
 
   const lines: string[] = renderPrelude(validModel, focusLayer);
 
   validModel.context.actors.forEach((actor) => {
+    visibleNodeIds.add(actor.id);
     lines.push(`ARCH3_ACTOR(${JSON.stringify(actor.name)}, ${aliasFor(actor.id)})`);
   });
 
   if (focusLayer === "context") {
     validModel.context.systems.forEach((system) => {
+      visibleNodeIds.add(system.id);
       lines.push(`ARCH3_SYSTEM(${JSON.stringify(system.name)}, ${aliasFor(system.id)})`);
     });
   }
@@ -87,6 +90,7 @@ export function renderPlantUml(
   if (focusLayer === "containers" || focusLayer === "components") {
     lines.push("package \"Containers\" {");
     validModel.containers.forEach((container) => {
+      visibleNodeIds.add(container.id);
       lines.push(`ARCH3_CONTAINER(${JSON.stringify(container.name)}, ${JSON.stringify(container.technology)}, ${aliasFor(container.id)})`);
 
       const metadataLines = linesForMetadata(container.metadata);
@@ -108,6 +112,7 @@ export function renderPlantUml(
     validModel.components
       .filter((component) => component.container === scopedContainer.id)
       .forEach((component) => {
+        visibleNodeIds.add(component.id);
         visibleComponentIds.add(component.id);
         lines.push(`ARCH3_COMPONENT(${JSON.stringify(component.name)}, ${aliasFor(component.id)})`);
 
@@ -131,6 +136,12 @@ export function renderPlantUml(
 
       if (focusLayer !== "components" && isComponentSource) {
         return;
+      }
+
+      if (focusLayer !== "components") {
+        if (!visibleNodeIds.has(source.id) || !visibleNodeIds.has(relationship.target)) {
+          return;
+        }
       }
 
       if (focusLayer === "components") {

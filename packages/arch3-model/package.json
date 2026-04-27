@@ -11,10 +11,16 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./schema": {
+      "default": "./dist/schema/arch3.schema.json"
     }
   },
+  "dependencies": {
+    "ajv": "^8.17.1"
+  },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node ./scripts/copy-schema.cjs",
     "test": "npm run build && tsx --test ./test/index.test.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   }

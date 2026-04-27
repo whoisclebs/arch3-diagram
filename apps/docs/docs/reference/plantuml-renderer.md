@@ -23,3 +23,15 @@ It already introduces:
 - Arch3-specific stereotypes and skin parameters
 - distinct treatment for actors, systems, containers, components, and libraries
 - separate visual treatment for library dependencies in layer 3
+
+## Regression snapshots
+
+The renderer is backed by committed `.puml` snapshots for key fixtures.
+
+Snapshot location:
+
+```text
+examples/snapshots/plantuml/
+```
+
+This helps keep the extension deterministic while the visual contract evolves.

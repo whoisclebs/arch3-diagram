@@ -1,0 +1,23 @@
+@startuml Arch3
+title Commerce Suite - context
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment center
+skinparam linetype ortho
+hide stereotype
+
+!define ARCH3_ACTOR(name, alias) actor "name" as alias <<arch3_actor>>
+!define ARCH3_SYSTEM(name, alias) rectangle "name\nSystem" as alias <<arch3_system>>
+!define ARCH3_CONTAINER(name, tech, alias) rectangle "name\n[tech]" as alias <<arch3_container>>
+!define ARCH3_COMPONENT(name, alias) rectangle "name" as alias <<arch3_component>>
+!define ARCH3_LIBRARY(name, alias) artifact "name" as alias <<arch3_library>>
+
+skinparam actor<<arch3_actor>> { BackgroundColor #EDE9FE; BorderColor #5B21B6 }
+skinparam rectangle<<arch3_system>> { BackgroundColor #DBEAFE; BorderColor #1D4ED8 }
+skinparam rectangle<<arch3_container>> { BackgroundColor #DCFCE7; BorderColor #15803D }
+skinparam rectangle<<arch3_component>> { BackgroundColor #FEF3C7; BorderColor #B45309 }
+skinparam artifact<<arch3_library>> { BackgroundColor #FCE7F3; BorderColor #BE185D }
+
+ARCH3_ACTOR("Shopper", shopper)
+ARCH3_SYSTEM("Commerce Suite", commerce_suite)
+@enduml

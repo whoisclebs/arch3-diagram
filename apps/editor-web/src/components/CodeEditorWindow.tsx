@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Editor from "@monaco-editor/react";
 
@@ -22,6 +22,10 @@ const CodeEditorWindow = ({
     setValue(safeValue);
     onChange("code", safeValue);
   };
+
+  useEffect(() => {
+    setValue(code || "");
+  }, [code]);
 
   return (
     <div className="overlay rounded-md overflow-hidden w-full h-full shadow-4xl">

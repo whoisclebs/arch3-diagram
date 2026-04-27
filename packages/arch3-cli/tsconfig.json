@@ -5,6 +5,10 @@
     "rootDir": "src",
     "outDir": "dist"
   },
-  "include": ["src/**/*.ts", "src/**/*.json"],
+  "references": [
+    { "path": "../arch3-model" },
+    { "path": "../arch3-dsl" }
+  ],
+  "include": ["src/**/*.ts"],
   "exclude": ["dist", "test"]
 }

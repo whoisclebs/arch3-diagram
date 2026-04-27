@@ -1,0 +1,17 @@
+methodology Arch3 0.1.0 context containers components
+scope "Commerce Suite" "Full reference fixture for Arch3 v0.1."
+actor shopper "Shopper" "Customer who places orders."
+system commerce-suite "Commerce Suite" "Primary commerce platform."
+container web-app commerce-suite "Web App" "React" "Customer-facing purchase experience." owner=experience-squad repo=github.com/whoisclebs/arch3-diagram tier=critical
+container checkout-api commerce-suite "Checkout API" "Node.js" "Processes checkout and order workflows." owner=payments-squad runtime=container
+container orders-db commerce-suite "Orders DB" "PostgreSQL" "Transactional order database." owner=data-platform backup=enabled
+component checkout-page web-app "Checkout Page" "Checkout form and cart orchestration." libs=react-router,zustand,zod criticalFlow=true
+component checkout-client web-app "Checkout Client" "HTTP client for the checkout API." libs=fetch,zod generated=false
+component checkout-service checkout-api "Checkout Service" "Coordinates validation and persistence." libs=express,stripe,prisma owner=payments-squad
+component orders-repository checkout-api "Orders Repository" "Persistence adapter for orders." libs=prisma owner=payments-squad
+rel web-app checkout-api "Sends checkout requests"
+rel checkout-api orders-db "Persists orders"
+rel checkout-page checkout-client "Triggers HTTP requests"
+rel checkout-client checkout-service "Calls the checkout API"
+rel checkout-service orders-repository "Stores the order"
+rel orders-repository orders-db "Uses PostgreSQL"

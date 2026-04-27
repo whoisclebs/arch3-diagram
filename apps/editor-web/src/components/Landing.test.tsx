@@ -4,7 +4,13 @@ import { createRoot } from "react-dom/client";
 // @ts-expect-error test environment flag for React act
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
-var mockParseArch3Json = jest.fn();
+var mockParseArch3Source = jest.fn((_: string) => ({
+  scope: { name: "Example" },
+  context: { actors: [], systems: [] },
+  containers: [],
+  components: [],
+  methodology: { name: "Arch3", version: "0.1.0", layers: [] },
+}));
 jest.mock("@arch3/arch3-dsl", () => ({
   Arch3ValidationError: class extends Error {
     issues: Array<{ code: string; path: string; message: string }>;
@@ -19,15 +25,23 @@ jest.mock("@arch3/arch3-dsl", () => ({
       id: "minimal",
       label: "Minimal",
       source: '{"scope":{"name":"Minimal"}}',
+      format: "json",
     },
     {
       id: "full",
       label: "Full",
       source: '{"scope":{"name":"Full"}}',
+      format: "json",
+    },
+    {
+      id: "full-text",
+      label: "Full Text",
+      source: 'methodology Arch3 0.1.0 context containers components',
+      format: "arch3",
     },
   ],
   getExampleArch3Source: () => '{"scope":{"name":"Example"}}',
-  parseArch3Json: (source: string) => mockParseArch3Json(source),
+  parseArch3Source: (source: string) => mockParseArch3Source(source),
 }));
 
 var mockRenderPlantUml = jest.fn(
@@ -100,7 +114,19 @@ describe("Landing", () => {
   });
 
   it("shows structured validation issues", async () => {
-    mockParseArch3Json.mockImplementation(() => {
+    let invocationCount = 0;
+    mockParseArch3Source.mockImplementation(() => {
+      invocationCount += 1;
+      if (invocationCount === 1) {
+        return {
+          scope: { name: "Example" },
+          context: { actors: [], systems: [] },
+          containers: [],
+          components: [],
+          methodology: { name: "Arch3", version: "0.1.0", layers: [] },
+        };
+      }
+
       throw new Arch3ValidationError([
         {
           code: "scope.missing_name",
@@ -126,8 +152,26 @@ describe("Landing", () => {
     expect(container.textContent).toContain("scope.name is required.");
   });
 
+  it("shows source format for textual fixtures", async () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+
+    await act(async () => {
+      createRoot(container).render(<Landing />);
+    });
+
+    const select = container.querySelectorAll("select")[0] as HTMLSelectElement;
+
+    await act(async () => {
+      select.value = "full-text";
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    expect(container.textContent).toContain("Arch3 DSL");
+  });
+
   it("renders preview image after successful compile", async () => {
-    mockParseArch3Json.mockReturnValue({
+    mockParseArch3Source.mockReturnValue({
       scope: { name: "Full" },
       context: { actors: [], systems: [] },
       containers: [],

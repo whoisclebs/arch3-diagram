@@ -1,3 +1,7 @@
+import Ajv2020 from "ajv/dist/2020";
+import { type ErrorObject, type ValidateFunction } from "ajv";
+import arch3Schema from "./schema/arch3.schema.json";
+
 export const ARCH3_LAYERS = ["context", "containers", "components"] as const;
 
 export type Arch3Layer = (typeof ARCH3_LAYERS)[number];
@@ -71,6 +75,20 @@ export type Arch3ValidationIssue = {
   message: string;
 };
 
+export type Arch3LintSeverity = "warning" | "error";
+
+export type Arch3LintIssue = {
+  code: string;
+  path: string;
+  message: string;
+  severity: Arch3LintSeverity;
+};
+
+export type Arch3LintResult = {
+  ok: boolean;
+  issues: Arch3LintIssue[];
+};
+
 export class Arch3ValidationError extends Error {
   issues: Arch3ValidationIssue[];
 
@@ -79,6 +97,55 @@ export class Arch3ValidationError extends Error {
     this.name = "Arch3ValidationError";
     this.issues = issues;
   }
+}
+
+const ajv = new Ajv2020({ allErrors: true, strict: false });
+const schemaValidator = ajv.compile(arch3Schema) as ValidateFunction;
+
+export const ARCH3_JSON_SCHEMA = arch3Schema;
+
+function formatSchemaPath(instancePath: string): string {
+  if (!instancePath || instancePath === "") {
+    return "$";
+  }
+
+  return `$${instancePath.replace(/\//g, ".")}`;
+}
+
+function pushSchemaIssues(
+  schemaErrors: ErrorObject[] | null | undefined,
+  issues: Arch3ValidationIssue[]
+): void {
+  (schemaErrors ?? []).forEach((schemaError) => {
+    const keyword = schemaError.keyword;
+    const path = formatSchemaPath(schemaError.instancePath);
+    const missingProperty =
+      keyword === "required" && typeof schemaError.params.missingProperty === "string"
+        ? schemaError.params.missingProperty
+        : null;
+
+    pushIssue(
+      issues,
+      `schema.${keyword}`,
+      missingProperty ? `${path}.${missingProperty}` : path,
+      schemaError.message ?? `Schema validation failed for keyword '${keyword}'.`
+    );
+  });
+}
+
+export function validateArch3Schema(model: unknown): Arch3ValidationResult {
+  const ok = schemaValidator(model) as boolean;
+  const issues: Arch3ValidationIssue[] = [];
+
+  if (!ok) {
+    pushSchemaIssues(schemaValidator.errors, issues);
+  }
+
+  return {
+    ok,
+    issues,
+    errors: issues.map((issue) => issue.message),
+  };
 }
 
 function pushIssue(
@@ -308,6 +375,11 @@ export function createExampleModel(): Arch3Model {
 }
 
 export function validateArch3Model(model: unknown): Arch3ValidationResult {
+  const schemaResult = validateArch3Schema(model);
+  if (!schemaResult.ok) {
+    return schemaResult;
+  }
+
   const issues: Arch3ValidationIssue[] = [];
 
   if (!model || typeof model !== "object") {
@@ -496,4 +568,99 @@ export function assertValidArch3Model(model: unknown): Arch3Model {
   }
 
   return model as Arch3Model;
+}
+
+function pushLintIssue(
+  issues: Arch3LintIssue[],
+  code: string,
+  path: string,
+  message: string,
+  severity: Arch3LintSeverity = "warning"
+): void {
+  issues.push({ code, path, message, severity });
+}
+
+function isKebabCase(value: string): boolean {
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
+}
+
+export function lintArch3Model(model: unknown): Arch3LintResult {
+  const validModel = assertValidArch3Model(model);
+  const issues: Arch3LintIssue[] = [];
+
+  if (!isKebabCase(validModel.scope.name.toLowerCase().replace(/\s+/g, "-"))) {
+    // no-op placeholder to avoid empty top-level lint category for now
+  }
+
+  validModel.containers.forEach((container, index) => {
+    if (!isKebabCase(container.id)) {
+      pushLintIssue(
+        issues,
+        "lint.container.id_not_kebab_case",
+        `containers[${index}].id`,
+        `Container id '${container.id}' should use kebab-case.`
+      );
+    }
+
+    if (!("owner" in container.metadata)) {
+      pushLintIssue(
+        issues,
+        "lint.container.missing_owner",
+        `containers[${index}].metadata.owner`,
+        `Container ${container.id} should declare metadata.owner.`
+      );
+    }
+
+    if (!("tier" in container.metadata)) {
+      pushLintIssue(
+        issues,
+        "lint.container.missing_tier",
+        `containers[${index}].metadata.tier`,
+        `Container ${container.id} should declare metadata.tier.`
+      );
+    }
+
+    if (container.relationships.length === 0) {
+      pushLintIssue(
+        issues,
+        "lint.container.no_relationships",
+        `containers[${index}].relationships`,
+        `Container ${container.id} has no declared relationships.`
+      );
+    }
+  });
+
+  validModel.components.forEach((component, index) => {
+    if (!isKebabCase(component.id)) {
+      pushLintIssue(
+        issues,
+        "lint.component.id_not_kebab_case",
+        `components[${index}].id`,
+        `Component id '${component.id}' should use kebab-case.`
+      );
+    }
+
+    if (component.libraries.length === 0) {
+      pushLintIssue(
+        issues,
+        "lint.component.no_libraries",
+        `components[${index}].libraries`,
+        `Component ${component.id} should declare at least one library.`
+      );
+    }
+
+    if (!("owner" in component.metadata)) {
+      pushLintIssue(
+        issues,
+        "lint.component.missing_owner",
+        `components[${index}].metadata.owner`,
+        `Component ${component.id} should declare metadata.owner.`
+      );
+    }
+  });
+
+  return {
+    ok: issues.length === 0,
+    issues,
+  };
 }

@@ -12,6 +12,9 @@ const sidebars = {
       items: [
         "reference/official-notation",
         "reference/canonical-model",
+        "reference/json-schema",
+        "reference/lint-rules",
+        "reference/text-dsl",
         "reference/diagram-as-code",
         "reference/fixtures-catalog",
         "reference/test-and-acceptance",
@@ -22,7 +25,7 @@ const sidebars = {
     {
       type: "category",
       label: "Guides",
-      items: ["guides/first-diagram", "guides/ai-first-workflow"],
+      items: ["guides/first-diagram", "guides/ai-first-workflow", "guides/cli-validation"],
     },
   ],
 };

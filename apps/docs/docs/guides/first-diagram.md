@@ -9,3 +9,5 @@ validate it quickly, and learn the notation through immediate feedback.
 4. choose the layer you want to inspect
 5. preview the current rendering output while refining the notation
 6. if the model is invalid, review the structured validation issues shown by the editor
+
+The editor also performs live validation while you type, even before rendering.

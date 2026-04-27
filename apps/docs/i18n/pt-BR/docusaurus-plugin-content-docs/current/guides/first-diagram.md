@@ -9,3 +9,5 @@ fonte, validá-la rápido e aprender a notação com feedback imediato.
 4. escolha a camada que deseja inspecionar
 5. visualize o render atual enquanto ajusta a notação
 6. se o modelo estiver inválido, revise os issues estruturados mostrados pelo editor
+
+O editor também realiza validação em tempo real enquanto você escreve, mesmo antes de renderizar.

@@ -6,7 +6,7 @@ import {
   Arch3ValidationError,
   getArch3FixtureSources,
   getExampleArch3Source,
-  parseArch3Json,
+  parseArch3Source,
 } from "@arch3/arch3-dsl";
 import { renderPlantUml } from "@arch3/arch3-plantuml";
 
@@ -17,6 +17,7 @@ const arch3Default = getExampleArch3Source();
 const fixtureSources = getArch3FixtureSources();
 
 type FocusLayer = "context" | "containers" | "components";
+type SourceFormat = "json" | "arch3";
 
 const Landing = (): JSX.Element => {
   const [url, setUrl] = useState<string | null>(null);
@@ -27,10 +28,30 @@ const Landing = (): JSX.Element => {
   const [focusLayer, setFocusLayer] = useState<FocusLayer>("containers");
   const [expandedContainer, setExpandedContainer] = useState("checkout-api");
   const [selectedFixture, setSelectedFixture] = useState<string>("full");
+  const [sourceFormat, setSourceFormat] = useState<SourceFormat>("json");
   const [theme, setTheme] = useState<{ value: string; label: string }>({
     value: "cobalt",
     label: "Cobalt",
   });
+
+  useEffect(() => {
+    try {
+      parseArch3Source(code);
+      setIssues([]);
+      setError(null);
+    } catch (validationError) {
+      if (validationError instanceof Arch3ValidationError) {
+        setIssues(validationError.issues);
+        setError(validationError.message);
+        return;
+      }
+
+      if (validationError instanceof Error) {
+        setIssues([]);
+        setError(validationError.message);
+      }
+    }
+  }, [code]);
 
   const onChange = (action: "code", data: string) => {
     switch (action) {
@@ -49,7 +70,7 @@ const Landing = (): JSX.Element => {
     setIssues([]);
 
     try {
-      const model = parseArch3Json(code);
+      const model = parseArch3Source(code);
       const plantUml = renderPlantUml(model, {
         focusLayer,
         expandedContainer,
@@ -75,6 +96,7 @@ const Landing = (): JSX.Element => {
     }
 
     setSelectedFixture(fixtureId);
+    setSourceFormat(fixture.format);
     setCode(fixture.source);
     setError(null);
     setIssues([]);
@@ -97,15 +119,15 @@ const Landing = (): JSX.Element => {
               arch3-diagram editor
             </h1>
             <p>
-              AI-first diagram as code in JSON, focused on context,
-              containers, and components.
+              AI-first diagram as code in JSON or Arch3 DSL, focused on
+              context, containers, and components.
             </p>
           </div>
           <CodeEditorWindow
             code={code}
             onChange={onChange}
             theme={theme.value}
-            language="json"
+            language={sourceFormat === "json" ? "json" : "plaintext"}
           />
         </div>
 
@@ -126,6 +148,13 @@ const Landing = (): JSX.Element => {
                   </option>
                 ))}
               </select>
+
+              <label className="text-sm font-medium text-slate-700">
+                Source format
+              </label>
+              <div className="rounded border border-slate-300 bg-white px-2 py-1 text-sm text-slate-700">
+                {sourceFormat === "json" ? "JSON" : "Arch3 DSL"}
+              </div>
 
               <label className="text-sm font-medium text-slate-700">
                 Layer

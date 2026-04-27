@@ -4,8 +4,11 @@ import path from "node:path";
 import test from "node:test";
 
 import {
+  ARCH3_JSON_SCHEMA,
   createExampleModel,
+  lintArch3Model,
   validateArch3Model,
+  validateArch3Schema,
   type Arch3ValidationIssue,
 } from "../src/index";
 
@@ -33,6 +36,10 @@ test("example model is valid", () => {
 
   assert.equal(result.ok, true);
   assert.deepEqual(result.errors, []);
+});
+
+test("json schema is exported", () => {
+  assert.equal(ARCH3_JSON_SCHEMA.title, "Arch3 Model v0.1");
 });
 
 test("invalid component container is rejected", () => {
@@ -63,6 +70,23 @@ test("valid fixtures pass validation", () => {
   });
 });
 
+test("valid fixtures pass schema validation", () => {
+  const validFixtures = [
+    "valid/minimal.arch3.json",
+    "valid/full.arch3.json",
+    "valid/context-only.arch3.json",
+    "valid/containers-only.arch3.json",
+    "valid/components-expanded.arch3.json",
+  ];
+
+  validFixtures.forEach((fixturePath) => {
+    const result = validateArch3Schema(readFixture(fixturePath));
+
+    assert.equal(result.ok, true, fixturePath);
+    assert.deepEqual(result.errors, [], fixturePath);
+  });
+});
+
 test("invalid structure fixtures fail validation", () => {
   const invalidFixtures = [
     "invalid/structure/missing-methodology.arch3.json",
@@ -76,6 +100,22 @@ test("invalid structure fixtures fail validation", () => {
 
     assert.equal(result.ok, false, fixturePath);
     assert.notEqual(result.errors.length, 0, fixturePath);
+    assert.notEqual(result.issues.length, 0, fixturePath);
+  });
+});
+
+test("invalid structure fixtures fail schema validation", () => {
+  const invalidFixtures = [
+    "invalid/structure/missing-methodology.arch3.json",
+    "invalid/structure/missing-scope.arch3.json",
+    "invalid/structure/missing-context.arch3.json",
+    "invalid/structure/missing-components.arch3.json",
+  ];
+
+  invalidFixtures.forEach((fixturePath) => {
+    const result = validateArch3Schema(readFixture(fixturePath));
+
+    assert.equal(result.ok, false, fixturePath);
     assert.notEqual(result.issues.length, 0, fixturePath);
   });
 });
@@ -119,7 +159,25 @@ test("semantic fixtures expose structured validation issues", () => {
   );
   assertHasIssue(
     invalidMetadata.issues,
-    "container.invalid_metadata_value",
-    "containers[0].metadata.owner"
+    "schema.type",
+    "$.containers.0.metadata.owner"
+  );
+});
+
+test("lint reports advisory issues for style and governance", () => {
+  const lintResult = lintArch3Model(readFixture("valid/lint-warnings.arch3.json"));
+
+  assert.equal(lintResult.ok, false);
+  assert.equal(
+    lintResult.issues.some((issue) => issue.code === "lint.container.id_not_kebab_case"),
+    true
+  );
+  assert.equal(
+    lintResult.issues.some((issue) => issue.code === "lint.container.missing_owner"),
+    true
+  );
+  assert.equal(
+    lintResult.issues.some((issue) => issue.code === "lint.component.no_libraries"),
+    true
   );
 });

@@ -1,0 +1,45 @@
+{
+  "methodology": {
+    "name": "Arch3",
+    "version": "0.1.0",
+    "layers": ["context", "containers", "components"]
+  },
+  "scope": {
+    "name": "Lint Scope",
+    "description": "Valid model with intentional lint warnings."
+  },
+  "context": {
+    "actors": [],
+    "systems": [
+      {
+        "id": "lint-platform",
+        "name": "Lint Platform",
+        "description": "System for lint fixtures."
+      }
+    ]
+  },
+  "containers": [
+    {
+      "id": "LintAPI",
+      "system": "lint-platform",
+      "name": "Lint API",
+      "technology": "Node.js",
+      "description": "Container with lint findings.",
+      "metadata": {
+        "runtime": "container"
+      },
+      "relationships": []
+    }
+  ],
+  "components": [
+    {
+      "id": "LintComponent",
+      "container": "LintAPI",
+      "name": "Lint Component",
+      "description": "Component with lint findings.",
+      "libraries": [],
+      "metadata": {},
+      "relationships": []
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@arch3/cli",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "arch3": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@arch3/arch3-dsl": "0.1.0",
+    "@arch3/arch3-model": "0.1.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "cli": "node ./dist/index.js",
+    "test": "npm run build && tsx --test ./test/index.test.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}
