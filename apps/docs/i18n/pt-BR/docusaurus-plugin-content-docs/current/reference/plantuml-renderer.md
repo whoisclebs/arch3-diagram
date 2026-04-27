@@ -1,6 +1,6 @@
 # Extensão PlantUML
 
-O pacote `@arch3/arch3-plantuml` é uma extensão de PlantUML para o Arch3.
+O pacote `@whoisclebs/arch3-plantuml` é uma extensão de PlantUML para o Arch3.
 
 Arch3 é independente de PlantUML. Este pacote é apenas um dos possíveis
 destinos de renderização da notação.

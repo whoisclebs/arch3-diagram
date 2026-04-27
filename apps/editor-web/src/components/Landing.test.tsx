@@ -11,7 +11,7 @@ var mockParseArch3Source = jest.fn((_: string) => ({
   components: [],
   methodology: { name: "Arch3", version: "0.1.0", layers: [] },
 }));
-jest.mock("@arch3/arch3-dsl", () => ({
+jest.mock("@whoisclebs/arch3-dsl", () => ({
   Arch3ValidationError: class extends Error {
     issues: Array<{ code: string; path: string; message: string }>;
 
@@ -48,7 +48,7 @@ var mockRenderPlantUml = jest.fn(
   (_model?: unknown, _options?: unknown) => "@startuml\n@enduml"
 );
 
-jest.mock("@arch3/arch3-plantuml", () => ({
+jest.mock("@whoisclebs/arch3-plantuml", () => ({
   renderPlantUml: (model: unknown, options: unknown) =>
     mockRenderPlantUml(model, options),
 }));
@@ -59,6 +59,7 @@ jest.mock("plantuml-encoder", () => ({
 
 jest.mock("../lib/defineTheme", () => ({
   defineTheme: () => Promise.resolve(),
+  registerArch3Language: () => Promise.resolve(),
 }));
 
 jest.mock("./Footer", () => () => <div>footer</div>);
@@ -74,7 +75,7 @@ jest.mock("./CodeEditorWindow", () => {
 });
 
 import Landing from "./Landing";
-import { Arch3ValidationError } from "@arch3/arch3-dsl";
+import { Arch3ValidationError } from "@whoisclebs/arch3-dsl";
 
 function clickByText(container: HTMLElement, text: string): void {
   const button = Array.from(container.querySelectorAll("button")).find(

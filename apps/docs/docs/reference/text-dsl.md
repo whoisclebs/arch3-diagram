@@ -49,3 +49,12 @@ tests, editor integration, and CLI validation.
 The DSL parser now exposes an explicit AST before conversion into the canonical
 model. This keeps text parsing, model building, and validation as separate
 concerns.
+
+## Editor support
+
+The reference editor now provides:
+
+- Arch3 DSL language mode
+- syntax highlighting for commands, strings, metadata, and libraries
+- basic command completions
+- live validation while editing

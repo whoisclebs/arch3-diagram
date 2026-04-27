@@ -1,7 +1,16 @@
 {
-  "name": "@arch3/arch3-model",
+  "name": "@whoisclebs/arch3-model",
   "version": "0.1.0",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whoisclebs/arch3-diagram.git",
+    "directory": "packages/arch3-model"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

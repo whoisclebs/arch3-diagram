@@ -32,7 +32,7 @@ packages/arch3-model/src/schema/arch3.schema.json
 Export del paquete:
 
 ```text
-@arch3/arch3-model/schema
+@whoisclebs/arch3-model/schema
 ```
 
 ## Capas de validación

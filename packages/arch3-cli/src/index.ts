@@ -9,14 +9,14 @@ import {
   parseArch3Text,
   stringifyArch3Json,
   stringifyArch3Text,
-} from "@arch3/arch3-dsl";
-import { renderPlantUml } from "@arch3/arch3-plantuml";
+} from "@whoisclebs/arch3-dsl";
+import { renderPlantUml } from "@whoisclebs/arch3-plantuml";
 import {
   Arch3ValidationError,
   lintArch3Model,
   validateArch3Model,
   validateArch3Schema,
-} from "@arch3/arch3-model";
+} from "@whoisclebs/arch3-model";
 
 type CliOptions = {
   mode: "full" | "schema" | "semantics";

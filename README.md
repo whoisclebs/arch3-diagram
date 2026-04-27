@@ -28,7 +28,7 @@ Arch3 is the modeling approach defined by this project.
 3. **Components**: internal modules and library dependencies inside a container
 
 Arch3 is independent from PlantUML. PlantUML is only one downstream rendering
-target through the `@arch3/arch3-plantuml` extension.
+target through the `@whoisclebs/arch3-plantuml` extension.
 
 ## Editor strategy
 
@@ -103,3 +103,12 @@ arch3-diagram is licensed under the MIT License.
 - Repository: https://github.com/whoisclebs/arch3-diagram
 - Issues: https://github.com/whoisclebs/arch3-diagram/issues
 - Security policy: ./SECURITY.md
+
+## GitHub Packages
+
+Published packages use the `@whoisclebs` scope on GitHub Packages:
+
+- `@whoisclebs/arch3-model`
+- `@whoisclebs/arch3-dsl`
+- `@whoisclebs/arch3-plantuml`
+- `@whoisclebs/arch3-cli`

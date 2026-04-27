@@ -7,10 +7,10 @@ import {
   getArch3FixtureSources,
   getExampleArch3Source,
   parseArch3Source,
-} from "@arch3/arch3-dsl";
-import { renderPlantUml } from "@arch3/arch3-plantuml";
+} from "@whoisclebs/arch3-dsl";
+import { renderPlantUml } from "@whoisclebs/arch3-plantuml";
 
-import { defineTheme } from "../lib/defineTheme";
+import { defineTheme, registerArch3Language } from "../lib/defineTheme";
 import Footer from "./Footer";
 
 const arch3Default = getExampleArch3Source();
@@ -104,7 +104,7 @@ const Landing = (): JSX.Element => {
   };
 
   useEffect(() => {
-    defineTheme("oceanic-next").then(() =>
+    Promise.all([registerArch3Language(), defineTheme("oceanic-next")]).then(() =>
       setTheme({ value: "oceanic-next", label: "Oceanic Next" })
     );
   }, []);
@@ -127,7 +127,7 @@ const Landing = (): JSX.Element => {
             code={code}
             onChange={onChange}
             theme={theme.value}
-            language={sourceFormat === "json" ? "json" : "plaintext"}
+            language={sourceFormat === "json" ? "json" : "arch3"}
           />
         </div>
 

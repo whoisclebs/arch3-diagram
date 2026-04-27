@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 
-import { createExampleModel } from "@arch3/arch3-model";
+import { createExampleModel } from "@whoisclebs/arch3-model";
 
 import { renderPlantUml } from "../src/index";
 

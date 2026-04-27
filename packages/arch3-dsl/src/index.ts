@@ -7,9 +7,9 @@ import {
   type Arch3Container,
   type Arch3Model,
   type Arch3Relationship,
-} from "@arch3/arch3-model";
+} from "@whoisclebs/arch3-model";
 
-export { Arch3ValidationError } from "@arch3/arch3-model";
+export { Arch3ValidationError } from "@whoisclebs/arch3-model";
 
 export type Arch3FixtureSource = {
   id: string;

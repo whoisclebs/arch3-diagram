@@ -26,3 +26,12 @@ rel web-app checkout-api "Sends checkout requests"
 
 El parser de la DSL ahora expone un AST explícito antes de convertirlo al
 modelo canónico.
+
+## Soporte del editor
+
+El editor de referencia ahora ofrece:
+
+- modo de lenguaje Arch3 DSL
+- resaltado de sintaxis para comandos, strings, metadata y libraries
+- completado básico de comandos
+- validación en vivo durante la edición

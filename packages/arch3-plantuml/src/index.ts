@@ -3,7 +3,7 @@ import {
   type Arch3Container,
   type Arch3Metadata,
   type Arch3Model,
-} from "@arch3/arch3-model";
+} from "@whoisclebs/arch3-model";
 
 export type RenderOptions = {
   focusLayer?: "context" | "containers" | "components";

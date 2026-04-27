@@ -31,7 +31,7 @@ It enforces:
 
 ## Package location
 
-The schema is published by `@arch3/arch3-model`.
+The schema is published by `@whoisclebs/arch3-model`.
 
 Primary source:
 
@@ -42,7 +42,7 @@ packages/arch3-model/src/schema/arch3.schema.json
 Package export:
 
 ```text
-@arch3/arch3-model/schema
+@whoisclebs/arch3-model/schema
 ```
 
 ## Validation layers

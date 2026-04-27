@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "license": "MIT",
   "dependencies": {
-    "@arch3/arch3-dsl": "0.1.0",
-    "@arch3/arch3-plantuml": "0.1.0",
+    "@whoisclebs/arch3-dsl": "0.1.0",
+    "@whoisclebs/arch3-plantuml": "0.1.0",
     "@monaco-editor/react": "^4.4.5",
     "monaco-themes": "^0.4.2",
     "plantuml-encoder": "^1.4.0",

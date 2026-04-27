@@ -1,5 +1,5 @@
 {
-  "name": "@arch3/cli",
+  "name": "@whoisclebs/arch3-cli",
   "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
@@ -11,8 +11,17 @@
     "dist"
   ],
   "dependencies": {
-    "@arch3/arch3-dsl": "0.1.0",
-    "@arch3/arch3-model": "0.1.0"
+    "@whoisclebs/arch3-dsl": "0.1.0",
+    "@whoisclebs/arch3-model": "0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whoisclebs/arch3-diagram.git",
+    "directory": "packages/arch3-cli"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

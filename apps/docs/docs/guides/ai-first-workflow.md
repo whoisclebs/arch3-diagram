@@ -3,8 +3,8 @@
 ## Recommended flow
 
 1. write or refine the diagram specification
-2. validate the JSON with `@arch3/arch3-dsl`
-3. render with `@arch3/arch3-plantuml`
+2. validate the JSON with `@whoisclebs/arch3-dsl`
+3. render with `@whoisclebs/arch3-plantuml`
 4. review the result with tests and docs
 
 ## Benefits
