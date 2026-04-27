@@ -25,12 +25,16 @@
     "lint": "npm run typecheck",
     "dev:editor": "npm run build:packages && npm run start -w @arch3/editor-web",
     "dev:docs": "npm run start -w @arch3/docs",
-    "arch3": "npm run cli -w @whoisclebs/arch3-cli --"
+    "arch3": "npm run cli -w @whoisclebs/arch3-cli --",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "publish-packages": "changeset publish"
   },
   "engines": {
     "node": ">=18"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.5",
     "@types/node": "^24.9.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"

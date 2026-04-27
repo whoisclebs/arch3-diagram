@@ -70,6 +70,12 @@ Watch a directory and re-run lint continuously:
 npm run arch3 -- watch examples/fixtures --lint
 ```
 
+Create a package release note with Changesets:
+
+```bash
+npm run changeset
+```
+
 ## Output model
 
 The CLI prints:

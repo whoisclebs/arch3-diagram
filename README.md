@@ -112,3 +112,25 @@ Published packages use the `@whoisclebs` scope on GitHub Packages:
 - `@whoisclebs/arch3-dsl`
 - `@whoisclebs/arch3-plantuml`
 - `@whoisclebs/arch3-cli`
+
+## Releases and versioning
+
+Package releases are managed with Changesets.
+
+Create a release note:
+
+```bash
+npm run changeset
+```
+
+Apply version bumps:
+
+```bash
+npm run version-packages
+```
+
+Publish through GitHub Packages:
+
+```bash
+npm run publish-packages
+```

@@ -70,3 +70,9 @@ Observar um diretório e reexecutar lint continuamente:
 ```bash
 npm run arch3 -- watch examples/fixtures --lint
 ```
+
+Criar uma nota de release com Changesets:
+
+```bash
+npm run changeset
+```
