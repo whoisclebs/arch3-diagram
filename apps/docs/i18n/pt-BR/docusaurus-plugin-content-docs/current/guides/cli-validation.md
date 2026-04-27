@@ -71,6 +71,12 @@ Observar um diretório e reexecutar lint continuamente:
 npm run arch3 -- watch examples/fixtures --lint
 ```
 
+Inspecionar a AST de um arquivo Arch3 DSL:
+
+```bash
+npm run arch3 -- ast examples/fixtures/valid/full.arch3
+```
+
 Criar uma nota de release com Changesets:
 
 ```bash

@@ -6,6 +6,7 @@ import path from "node:path";
 import {
   parseArch3Json,
   parseArch3Source,
+  parseArch3TextAst,
   parseArch3Text,
   stringifyArch3Json,
   stringifyArch3Text,
@@ -45,6 +46,7 @@ Usage:
   arch3 format <file> [--to json|arch3] [--write]
   arch3 lint <file-or-directory>
   arch3 watch <file-or-directory> [--lint]
+  arch3 ast <file>
 `);
 }
 
@@ -449,6 +451,33 @@ function runWatch(args: string[]): number {
   return 0;
 }
 
+function runAst(args: string[]): number {
+  const target = args.find((arg) => !arg.startsWith("--"));
+  if (!target) {
+    printUsage();
+    return 1;
+  }
+
+  const targetPath = path.resolve(process.cwd(), target);
+  if (!fs.existsSync(targetPath)) {
+    console.error(`Path not found: ${target}`);
+    return 1;
+  }
+
+  const source = fs.readFileSync(targetPath, "utf8");
+
+  try {
+    const ast = targetPath.endsWith(".arch3")
+      ? parseArch3TextAst(source)
+      : { nodes: [{ type: "json-source", line: 1 }] };
+    console.log(`${JSON.stringify(ast, null, 2)}\n`);
+    return 0;
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : "Unknown AST error.");
+    return 1;
+  }
+}
+
 export function main(argv: string[]): number {
   const [command, ...rest] = argv;
 
@@ -483,6 +512,10 @@ export function main(argv: string[]): number {
 
   if (command === "watch") {
     return runWatch(rest);
+  }
+
+  if (command === "ast") {
+    return runAst(rest);
   }
 
   printUsage();

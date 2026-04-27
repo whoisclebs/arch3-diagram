@@ -115,3 +115,11 @@ test("cli usage includes watch command", () => {
   assert.equal(result.status, 0);
   assert.match(result.stdout, /arch3 watch <file-or-directory> \[--lint\]/);
 });
+
+test("cli prints AST for text DSL files", () => {
+  const result = runCli(["ast", "examples/fixtures/valid/full.arch3"]);
+
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /"type": "methodology"/);
+  assert.match(result.stdout, /"type": "container"/);
+});

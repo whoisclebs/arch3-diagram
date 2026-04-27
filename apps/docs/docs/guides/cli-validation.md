@@ -70,6 +70,12 @@ Watch a directory and re-run lint continuously:
 npm run arch3 -- watch examples/fixtures --lint
 ```
 
+Inspect the AST of an Arch3 DSL file:
+
+```bash
+npm run arch3 -- ast examples/fixtures/valid/full.arch3
+```
+
 Create a package release note with Changesets:
 
 ```bash
@@ -88,6 +94,7 @@ The CLI prints:
 - normalized JSON or Arch3 DSL when using `format`
 - advisory warnings when using `lint`
 - continuous feedback when using `watch`
+- explicit AST output when using `ast`
 
 ## Recommended use
 
